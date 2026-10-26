@@ -172,3 +172,200 @@ input:focus, button:focus-visible {
   outline: 1px solid #39ff14;
   outline-offset: 2px;
 }
+
+/* Responsive layout */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-padding-top: 6rem;
+  overflow-x: clip;
+}
+
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+img {
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  html {
+    scroll-padding-top: 7rem;
+  }
+
+  .site-header-inner {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .site-brand {
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .site-header-actions {
+    gap: 0.4rem;
+    margin-left: auto;
+  }
+
+  .site-header-actions button {
+    min-height: 2.5rem;
+    padding: 0.5rem;
+  }
+
+  .mobile-nav-links {
+    min-width: 100%;
+    width: max-content;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .page-content {
+    padding: 1.5rem 0.875rem;
+  }
+
+  .page-content > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 3.5rem;
+  }
+
+  .section-title {
+    min-width: 0;
+    font-size: clamp(1.15rem, 5.6vw, 1.5rem);
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .section-title i {
+    width: 1.35rem;
+    height: 1.35rem;
+    flex: 0 0 auto;
+  }
+
+  .hero-badge {
+    max-width: 100%;
+    justify-content: center;
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+    font-size: 0.625rem;
+    line-height: 1.5;
+  }
+
+  #hero {
+    min-height: auto;
+    padding: 4rem 0.25rem;
+  }
+
+  #heroTitle {
+    font-size: clamp(4rem, 20vw, 5.5rem);
+  }
+
+  #hero > p {
+    max-width: 100%;
+  }
+
+  .hero-actions {
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .hero-actions > * {
+    width: 100%;
+    min-height: 2.75rem;
+    justify-content: center;
+  }
+
+  #about > .grid {
+    gap: 1.25rem;
+    padding: 1rem;
+  }
+
+  #about h2 {
+    font-size: clamp(1.2rem, 6vw, 1.75rem);
+  }
+
+  #about ul li {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+  }
+
+  #skills ul > li {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+  }
+
+  #skills ul > li > span:first-child {
+    flex: 1 1 8rem;
+  }
+
+  .collection-stats {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .collection-stats > span {
+    flex: 1 1 100%;
+  }
+
+  .film-card .flex.items-center.gap-2 {
+    flex-wrap: wrap;
+  }
+
+  #contact a {
+    overflow-wrap: anywhere;
+  }
+
+  #lightbox {
+    padding: 1rem;
+  }
+
+  #lightbox > button {
+    top: 1rem;
+    right: 1rem;
+  }
+
+  #lightboxImg {
+    max-height: 75vh;
+  }
+
+  #lightboxCaption {
+    bottom: 1rem;
+    max-width: calc(100% - 2rem);
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  #winampPlayer {
+    right: 1rem;
+    bottom: 1rem;
+    width: calc(100vw - 2rem);
+    max-width: 20rem;
+    display: none;
+  }
+
+  footer {
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  footer .grid {
+    gap: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

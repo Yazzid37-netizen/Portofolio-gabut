@@ -272,11 +272,8 @@ function toggleCRT() {
 
 function toggleWinamp() {
   const winamp = document.getElementById('winampPlayer');
-  if (winamp.style.display === 'none') {
-    winamp.style.display = 'block';
-  } else {
-    winamp.style.display = 'none';
-  }
+  const isHidden = window.getComputedStyle(winamp).display === 'none';
+  winamp.style.display = isHidden ? 'block' : 'none';
 }
 
 // ==================== SFX ====================
