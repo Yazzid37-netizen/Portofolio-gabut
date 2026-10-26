@@ -1,0 +1,174 @@
+
+.crt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+  z-index: 99;
+  opacity: 0.8;
+}
+
+.y2k-box {
+  background-color: #121216;
+  border: 2px solid #2a2a36;
+  box-shadow: 4px 4px 0px #000000;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.y2k-header {
+  background: linear-gradient(90deg, #1a1a22, #08080a);
+  border-bottom: 1px solid #2a2a36;
+  padding: 6px 12px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  color: #a0a0b0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* CD Spin */
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 8s linear infinite;
+}
+
+/* Section reveal animation — visible by default, JS adds .unrevealed then .revealed */
+.section-reveal {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.section-reveal.unrevealed {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.section-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Gallery hover glow */
+.gallery-item {
+  transition: all 0.3s ease;
+}
+
+.gallery-item:hover {
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.15), 4px 4px 0px #000000;
+}
+
+/* Film card hover effect */
+.film-card {
+  transition: all 0.3s ease;
+}
+
+.film-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(230, 0, 51, 0.2), 4px 4px 0px #000000;
+}
+
+/* line clamp for film descriptions */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Lightbox */
+#lightbox {
+  transition: opacity 0.3s ease;
+}
+
+#lightbox.active {
+  display: flex;
+}
+
+/* Navbar glow effect */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #39ff14;
+  box-shadow: 0 0 6px #39ff14;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #08080a;
+}
+::-webkit-scrollbar-thumb {
+  background: #e60033;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #39ff14;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Pulse glow for hero title */
+@keyframes glowPulse {
+  0%, 100% { text-shadow: 0 0 20px rgba(230, 0, 51, 0.3); }
+  50% { text-shadow: 0 0 40px rgba(230, 0, 51, 0.6), 0 0 80px rgba(230, 0, 51, 0.2); }
+}
+
+#heroTitle {
+  animation: glowPulse 4s ease-in-out infinite;
+}
+
+/* Vis bars smooth transition */
+.vis-bar {
+  transition: height 0.15s ease-out;
+  border-radius: 1px 1px 0 0;
+}
+
+/* Mobile nav scrollbar hide */
+.md\:hidden::-webkit-scrollbar {
+  display: none;
+}
+
+/* Focus styles for accessibility */
+input:focus, button:focus-visible {
+  outline: 1px solid #39ff14;
+  outline-offset: 2px;
+}

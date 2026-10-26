@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yazid // retro Portfolio</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            metal: {
+              black: '#08080a',
+              dark: '#121216',
+              card: '#1a1a22',
+              crimson: '#e60033',
+              toxic: '#39ff14',
+              cyan: '#00f0ff',
+              gold: '#ffb700',
+              silver: '#a0a0b0'
+            }
+          },
+          fontFamily: {
+            orbitron: ['Orbitron', 'sans-serif'],
+            vt323: ['VT323', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-metal-black text-gray-200 font-vt323 text-xl antialiased selection:bg-metal-crimson selection:text-white min-h-screen relative overflow-x-hidden">
+
+  <!-- CRT Overlay -->
+  <div id="crtOverlay" class="crt-overlay"></div>
+
+  <!-- Boot Loader -->
+  <div id="introLoader" class="fixed inset-0 bg-black z-50 flex flex-col justify-between p-6 sm:p-10 font-vt323 text-metal-toxic transition-opacity duration-700">
+    <div class="space-y-2 text-lg sm:text-2xl">
+      <div class="flex justify-between border-b border-metal-toxic/30 pb-2">
+        <span>SYSTEM: NU_METAL_OS_v2.000</span>
+        <span>BIOS Date: 08/17/2003</span>
+      </div>
+      <p class="text-white">&gt; INITIALIZING CORE SOUNDKRAFT SYNTHESIZER...</p>
+      <p class="text-metal-toxic">&gt; LOADING CYBER_Y2K_PORTFOLIO.EXE [Yazid]</p>
+      <p class="text-metal-silver">&gt; MOUNTING VIRTUAL CD-ROM: YAZID_DISC_1.ISO...</p>
+      <div id="bootLogs" class="pt-2 text-metal-cyan space-y-1"></div>
+    </div>
+
+    <div class="space-y-4 max-w-xl">
+      <div class="flex justify-between text-sm sm:text-base text-metal-toxic">
+        <span id="loadStatus">LOADING AUDIO RACKS & SHADERS...</span>
+        <span id="loadPercent">0%</span>
+      </div>
+      <div class="w-full bg-metal-dark border border-metal-toxic h-6 p-1 relative">
+        <div id="progressBar" class="bg-metal-toxic h-full w-0 transition-all duration-300 shadow-[0_0_10px_#39ff14]"></div>
+      </div>
+      <p class="text-xs text-metal-silver text-center animate-pulse">PRESS ANYWHERE TO BOOT AND PLAY AUDIO · OR WAIT TO BOOT</p>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-metal-black/90 backdrop-blur-md border-b-2 border-metal-crimson shadow-[0_4px_20px_rgba(230,0,51,0.25)]">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded bg-metal-crimson flex items-center justify-center font-orbitron font-black text-black text-lg shadow-[0_0_10px_#e60033]">
+          A
+        </div>
+        <span class="font-orbitron font-extrabold text-xl sm:text-2xl tracking-wider text-white">
+          YAZID<span class="text-metal-crimson text-xs align-super ml-1">.SYS</span>
+        </span>
+      </div>
+
+      <!-- Nav Links -->
+      <nav class="hidden md:flex items-center gap-6 font-orbitron text-xs tracking-widest">
+        <a href="#about" onclick="smoothScrollToSection(event, 'about')" class="nav-link text-metal-silver hover:text-metal-toxic transition-colors hover:glow-toxic">/ABOUT</a>
+        <a href="#skills" onclick="smoothScrollToSection(event, 'skills')" class="nav-link text-metal-silver hover:text-metal-toxic transition-colors hover:glow-toxic">/SKILLS</a>
+        <a href="#projects" onclick="smoothScrollToSection(event, 'projects')" class="nav-link text-metal-silver hover:text-metal-toxic transition-colors hover:glow-toxic">/PROJECTS</a>
+        <a href="#gallery" onclick="smoothScrollToSection(event, 'gallery')" class="nav-link text-metal-silver hover:text-metal-toxic transition-colors hover:glow-toxic">/GALLERY</a>
+        <a href="#films" onclick="smoothScrollToSection(event, 'films')" class="nav-link text-metal-silver hover:text-metal-toxic transition-colors hover:glow-toxic">/FILMS</a>
+        <a href="#terminal" onclick="smoothScrollToSection(event, 'terminal')" class="nav-link text-metal-silver hover:text-metal-toxic transition-colors hover:glow-toxic">/TERMINAL</a>
+        <a href="#contact" onclick="smoothScrollToSection(event, 'contact')" class="nav-link text-metal-silver hover:text-metal-toxic transition-colors hover:glow-toxic">/CONTACT</a>
+      </nav>
+
+      <!-- Header Buttons -->
+      <div class="flex items-center gap-3">
+        <button onclick="toggleCRT()" class="p-2 bg-metal-dark border border-metal-silver/40 rounded text-xs font-orbitron text-metal-silver hover:text-metal-cyan hover:border-metal-cyan transition-all" title="Toggle CRT Filter Effect">
+          CRT: <span id="crtStatus" class="text-metal-toxic">ON</span>
+        </button>
+        <button onclick="toggleWinamp()" class="p-2 bg-metal-crimson/20 border border-metal-crimson text-metal-crimson rounded hover:bg-metal-crimson hover:text-white transition-all text-xs font-orbitron flex items-center gap-1">
+          <i data-lucide="disc" class="w-4 h-4 animate-spin-slow"></i>
+          <span class="hidden sm:inline">WINAMP</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav -->
+    <div class="md:hidden border-t border-gray-800 overflow-x-auto">
+      <div class="flex gap-1 px-3 py-2 font-orbitron text-[10px] tracking-widest whitespace-nowrap">
+        <a href="#about" onclick="smoothScrollToSection(event, 'about')" class="text-metal-silver hover:text-metal-toxic px-2 py-1 border border-gray-800 rounded transition-colors">/ABOUT</a>
+        <a href="#skills" onclick="smoothScrollToSection(event, 'skills')" class="text-metal-silver hover:text-metal-toxic px-2 py-1 border border-gray-800 rounded transition-colors">/SKILLS</a>
+        <a href="#projects" onclick="smoothScrollToSection(event, 'projects')" class="text-metal-silver hover:text-metal-toxic px-2 py-1 border border-gray-800 rounded transition-colors">/PROJECTS</a>
+        <a href="#gallery" onclick="smoothScrollToSection(event, 'gallery')" class="text-metal-silver hover:text-metal-toxic px-2 py-1 border border-gray-800 rounded transition-colors">/GALLERY</a>
+        <a href="#films" onclick="smoothScrollToSection(event, 'films')" class="text-metal-silver hover:text-metal-toxic px-2 py-1 border border-gray-800 rounded transition-colors">/FILMS</a>
+        <a href="#terminal" onclick="smoothScrollToSection(event, 'terminal')" class="text-metal-silver hover:text-metal-toxic px-2 py-1 border border-gray-800 rounded transition-colors">/TERMINAL</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8 space-y-20">
+
+    <!-- ==================== HERO ==================== -->
+    <section id="hero" class="relative min-h-[75vh] flex flex-col justify-center items-center text-center py-12">
+      <div class="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-metal-crimson/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -z-10 top-1/4 left-1/4 w-64 h-64 bg-metal-toxic/5 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-metal-dark border border-metal-crimson/50 text-metal-crimson rounded-full text-sm font-orbitron mb-6 shadow-[0_0_15px_rgba(230,0,51,0.2)]">
+        <span class="w-2 h-2 rounded-full bg-metal-crimson animate-ping"></span>
+        NU METAL & SOFTWARE CRAFTSMAN
+      </div>
+
+      <h1 id="heroTitle" class="font-orbitron font-black text-6xl sm:text-8xl md:text-9xl tracking-tighter uppercase text-white transition-all duration-500">
+        YAZID
+      </h1>
+
+      <p class="text-2xl sm:text-3xl text-metal-toxic max-w-2xl mt-4 font-vt323 tracking-wide">
+        &lt;SOFTWARE ENGINEER / ELITIS / FULL STACK DEVELOPER /&gt;
+      </p>
+
+      <p class="text-metal-silver max-w-xl text-lg mt-2">
+        Building high-impact web apps, heavy synth audio engines, & Y2K brutalist interfaces from Bantul, ID.
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="flex flex-wrap gap-4 justify-center mt-8 font-orbitron text-xs">
+        <button onclick="playGuitarRiff()" class="px-6 py-3 bg-metal-crimson text-white font-bold rounded border-2 border-red-400 hover:bg-red-600 hover:scale-105 transition-all shadow-[0_0_20px_rgba(230,0,51,0.6)] flex items-center gap-2">
+          <i data-lucide="zap" class="w-4 h-4"></i> PLAY NU-METAL RIFF
+        </button>
+        <a href="#projects" onclick="smoothScrollToSection(event, 'projects')" class="px-6 py-3 bg-metal-dark border border-metal-toxic text-metal-toxic rounded hover:bg-metal-toxic hover:text-black transition-all flex items-center gap-2">
+          <i data-lucide="code" class="w-4 h-4"></i> EXPLORE PROJECTS
+        </a>
+      </div>
+
+      <!-- CD Visual -->
+      <div class="mt-12 relative group cursor-pointer" onclick="togglePlayMusic()">
+        <div id="cdVisual" class="w-40 h-40 sm:w-52 sm:h-52 rounded-full border-4 border-gray-700 bg-gradient-to-tr from-gray-900 via-gray-700 to-gray-900 flex items-center justify-center shadow-[0_0_30px_rgba(0,240,255,0.2)] transition-transform duration-700 group-hover:scale-105">
+          <div class="w-16 h-16 rounded-full border-2 border-metal-cyan/50 bg-metal-black flex items-center justify-center text-xs font-orbitron text-metal-cyan text-center p-1">
+            YAZID '03
+          </div>
+        </div>
+        <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-metal-black/90 border border-metal-toxic px-3 py-1 rounded-full text-xs text-metal-toxic font-orbitron shadow-md">
+          CLICK CD TO PLAY / PAUSE
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ABOUT ==================== -->
+    <section id="about" class="y2k-box section-reveal">
+      <div class="y2k-header">
+        <span>ABOUT_DEVELOPER.TXT</span>
+        <span>SYS_ID: 2000_YAZID</span>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6 p-6">
+        <div class="md:col-span-2 space-y-4 text-gray-300">
+          <h2 class="font-orbitron text-3xl font-bold text-white flex items-center gap-2">
+            <i data-lucide="terminal" class="text-metal-crimson"></i> HEAVY CODE & HEAVY RIFFS
+          </h2>
+          <p class="leading-relaxed">
+            I'm <strong class="text-white">YAZID</strong>, a Software Engineering student at SMKN 1 Bantul. Inspired by the raw energy of late 90s/early 2000s Nu-Metal (Limp Bizkit, Korn, Slipknot, Avenged Sevenfold) and modern Web & Mobile development frameworks.
+          </p>
+          <p class="leading-relaxed">
+            Specializing in Full-Stack Web apps with Laravel & React, Flutter Mobile, Linux Systems Admin, and building interactive Audio Web experiences.
+          </p>
+          <div class="grid sm:grid-cols-2 gap-3 pt-2 text-sm font-orbitron">
+            <div class="bg-metal-black p-3 border border-gray-800 rounded hover:border-metal-cyan/50 transition-colors">
+              <span class="text-metal-silver block">LOCATION:</span>
+              <span class="text-metal-cyan">Bantul, Yogyakarta, ID</span>
+            </div>
+            <div class="bg-metal-black p-3 border border-gray-800 rounded hover:border-metal-toxic/50 transition-colors">
+              <span class="text-metal-silver block">SPECIALTY:</span>
+              <span class="text-metal-toxic">Full Stack & Web Audio API</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Specs Side -->
+        <div class="bg-metal-black border border-metal-crimson/30 p-4 rounded flex flex-col justify-between space-y-4">
+          <h3 class="font-orbitron text-metal-crimson text-lg font-bold border-b border-metal-crimson/30 pb-2">SYSTEM SPECS</h3>
+          <ul class="space-y-2 text-base font-vt323 text-gray-300">
+            <li class="flex justify-between"><span>STACK:</span> <span class="text-metal-cyan">Laravel, JS, Dart/Flutter</span></li>
+            <li class="flex justify-between"><span>OS:</span> <span class="text-metal-gold">CachyOS Linux / Win11</span></li>
+            <li class="flex justify-between"><span>STATUS:</span> <span class="text-metal-toxic animate-pulse">READY FOR HIRE</span></li>
+          </ul>
+          <div class="pt-2">
+            <a href="#terminal" onclick="smoothScrollToSection(event, 'terminal')" class="w-full text-center block py-2 bg-metal-crimson text-white font-orbitron text-xs rounded hover:bg-red-700 transition-colors">
+              EXECUTE CONTACT()
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SKILLS ==================== -->
+    <section id="skills" class="space-y-6 section-reveal">
+      <div class="flex items-center gap-3">
+        <h2 class="font-orbitron font-extrabold text-3xl text-white">SKILL_MATRIX</h2>
+        <div class="h-0.5 flex-1 bg-gradient-to-r from-metal-crimson to-transparent"></div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Frontend -->
+        <div class="y2k-box p-4 space-y-3 hover:border-metal-cyan/60 transition-all duration-300 group">
+          <div class="flex items-center gap-2 text-metal-cyan font-orbitron font-bold">
+            <i data-lucide="layout" class="w-5 h-5"></i> FRONTEND
+          </div>
+          <ul class="space-y-2 font-vt323 text-lg text-gray-300">
+            <li class="flex justify-between items-center">
+              <span>HTML5 / CSS3 / JS</span>
+              <div class="flex items-center gap-2">
+                <div class="w-16 h-1.5 bg-metal-dark rounded-full overflow-hidden"><div class="h-full bg-metal-toxic rounded-full" style="width:95%"></div></div>
+                <span class="text-metal-toxic text-sm">95%</span>
+              </div>
+            </li>
+            <li class="flex justify-between items-center">
+              <span>Tailwind CSS</span>
+              <div class="flex items-center gap-2">
+                <div class="w-16 h-1.5 bg-metal-dark rounded-full overflow-hidden"><div class="h-full bg-metal-toxic rounded-full" style="width:90%"></div></div>
+                <span class="text-metal-toxic text-sm">90%</span>
+              </div>
+            </li>
+            <li class="flex justify-between items-center">
+              <span>Web Audio API</span>
+              <div class="flex items-center gap-2">
+                <div class="w-16 h-1.5 bg-metal-dark rounded-full overflow-hidden"><div class="h-full bg-metal-toxic rounded-full" style="width:85%"></div></div>
+                <span class="text-metal-toxic text-sm">85%</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Backend -->
+        <div class="y2k-box p-4 space-y-3 hover:border-metal-crimson/60 transition-all duration-300 group">
+          <div class="flex items-center gap-2 text-metal-crimson font-orbitron font-bold">
+            <i data-lucide="server" class="w-5 h-5"></i> BACKEND
+          </div>
+          <ul class="space-y-2 font-vt323 text-lg text-gray-300">
+            <li class="flex justify-between items-center">
+              <span>PHP / Laravel</span>
+              <div class="flex items-center gap-2">
+                <div class="w-16 h-1.5 bg-metal-dark rounded-full overflow-hidden"><div class="h-full bg-metal-crimson rounded-full" style="width:88%"></div></div>
+                <span class="text-metal-toxic text-sm">88%</span>
+              </div>
+            </li>
+            <li class="flex justify-between items-center">
+              <span>MySQL / Database</span>
+              <div class="flex items-center gap-2">
+                <div class="w-16 h-1.5 bg-metal-dark rounded-full overflow-hidden"><div class="h-full bg-metal-crimson rounded-full" style="width:85%"></div></div>
+                <span class="text-metal-toxic text-sm">85%</span>
+              </div>
+            </li>
+            <li class="flex justify-between items-center">
+              <span>REST APIs</span>
+              <div class="flex items-center gap-2">
+                <div class="w-16 h-1.5 bg-metal-dark rounded-full overflow-hidden"><div class="h-full bg-metal-crimson rounded-full" style="width:82%"></div></div>
+                <span class="text-metal-toxic text-sm">82%</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Mobile & Tools -->
+        <div class="y2k-box p-4 space-y-3 hover:border-metal-gold/60 transition-all duration-300 group">
+          <div class="flex items-center gap-2 text-metal-gold font-orbitron font-bold">
+            <i data-lucide="smartphone" class="w-5 h-5"></i> MOBILE & TOOLS
+          </div>
+          <ul class="space-y-2 font-vt323 text-lg text-gray-300">
+            <li class="flex justify-between items-center">
+              <span>Dart / Flutter</span>
+              <div class="flex items-center gap-2">
+                <div class="w-16 h-1.5 bg-metal-dark rounded-full overflow-hidden"><div class="h-full bg-metal-gold rounded-full" style="width:80%"></div></div>
+                <span class="text-metal-toxic text-sm">80%</span>
+              </div>
+            </li>
+            <li class="flex justify-between items-center">
+              <span>Git & GitHub</span>
+              <div class="flex items-center gap-2">
+                <div class="w-16 h-1.5 bg-metal-dark rounded-full overflow-hidden"><div class="h-full bg-metal-gold rounded-full" style="width:90%"></div></div>
+                <span class="text-metal-toxic text-sm">90%</span>
+              </div>
+            </li>
+            <li class="flex justify-between items-center">
+              <span>VS Code / Laragon</span>
+              <div class="flex items-center gap-2">
+                <div class="w-16 h-1.5 bg-metal-dark rounded-full overflow-hidden"><div class="h-full bg-metal-gold rounded-full" style="width:92%"></div></div>
+                <span class="text-metal-toxic text-sm">92%</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Sys & Cyber -->
+        <div class="y2k-box p-4 space-y-3 hover:border-metal-toxic/60 transition-all duration-300 group">
+          <div class="flex items-center gap-2 text-metal-toxic font-orbitron font-bold">
+            <i data-lucide="terminal" class="w-5 h-5"></i> SYS & CYBER
+          </div>
+          <ul class="space-y-2 font-vt323 text-lg text-gray-300">
+            <li class="flex justify-between items-center">
+              <span>Linux Admin</span>
+              <div class="flex items-center gap-2">
+                <div class="w-16 h-1.5 bg-metal-dark rounded-full overflow-hidden"><div class="h-full bg-metal-toxic rounded-full" style="width:84%"></div></div>
+                <span class="text-metal-toxic text-sm">84%</span>
+              </div>
+            </li>
+            <li class="flex justify-between items-center">
+              <span>OverTheWire Bandit</span>
+              <span class="text-metal-toxic text-sm">Lvl 18+</span>
+            </li>
+            <li class="flex justify-between items-center">
+              <span>Dual-Boot & Part.</span>
+              <div class="flex items-center gap-2">
+                <div class="w-16 h-1.5 bg-metal-dark rounded-full overflow-hidden"><div class="h-full bg-metal-toxic rounded-full" style="width:95%"></div></div>
+                <span class="text-metal-toxic text-sm">95%</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PROJECTS ==================== -->
+    <section id="projects" class="space-y-6 section-reveal">
+      <div class="flex items-center gap-3">
+        <h2 class="font-orbitron font-extrabold text-3xl text-white">FEATURED_PROJECTS</h2>
+        <div class="h-0.5 flex-1 bg-gradient-to-r from-metal-toxic to-transparent"></div>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Project 1 -->
+        <div class="y2k-box flex flex-col justify-between p-5 space-y-4 hover:border-metal-toxic transition-all duration-300 group">
+          <div>
+            <div class="flex justify-between items-center text-xs font-orbitron text-metal-silver border-b border-gray-800 pb-2 mb-3">
+              <span>PROJECT_01</span>
+              <span class="text-metal-toxic">SYSTEM WEB</span>
+            </div>
+            <h3 class="font-orbitron font-bold text-xl text-white group-hover:text-metal-toxic transition-colors">QR Code Student Attendance</h3>
+            <p class="text-sm text-gray-400 mt-2">
+              Automated student attendance tracking system built with PHP & QR Code scanner integration.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <div class="flex flex-wrap gap-1 text-xs font-orbitron text-metal-cyan">
+              <span class="bg-metal-black px-2 py-0.5 rounded border border-gray-800">PHP</span>
+              <span class="bg-metal-black px-2 py-0.5 rounded border border-gray-800">MySQL</span>
+              <span class="bg-metal-black px-2 py-0.5 rounded border border-gray-800">QR API</span>
+            </div>
+            <button onclick="playSFX(800)" class="w-full py-2 bg-metal-dark border border-metal-toxic text-metal-toxic hover:bg-metal-toxic hover:text-black font-orbitron text-xs rounded transition-colors">
+              VIEW DETAILS
+            </button>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="y2k-box flex flex-col justify-between p-5 space-y-4 hover:border-metal-crimson transition-all duration-300 group">
+          <div>
+            <div class="flex justify-between items-center text-xs font-orbitron text-metal-silver border-b border-gray-800 pb-2 mb-3">
+              <span>PROJECT_02</span>
+              <span class="text-metal-crimson">MOBILE APP</span>
+            </div>
+            <h3 class="font-orbitron font-bold text-xl text-white group-hover:text-metal-crimson transition-colors">SchoolFind Lost & Found</h3>
+            <p class="text-sm text-gray-400 mt-2">
+              School mobile application designed for reporting, tracking, and retrieving lost items.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <div class="flex flex-wrap gap-1 text-xs font-orbitron text-metal-crimson">
+              <span class="bg-metal-black px-2 py-0.5 rounded border border-gray-800">Flutter</span>
+              <span class="bg-metal-black px-2 py-0.5 rounded border border-gray-800">Dart</span>
+              <span class="bg-metal-black px-2 py-0.5 rounded border border-gray-800">Firebase</span>
+            </div>
+            <button onclick="playSFX(800)" class="w-full py-2 bg-metal-dark border border-metal-crimson text-metal-crimson hover:bg-metal-crimson hover:text-white font-orbitron text-xs rounded transition-colors">
+              VIEW DETAILS
+            </button>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="y2k-box flex flex-col justify-between p-5 space-y-4 hover:border-metal-gold transition-all duration-300 group">
+          <div>
+            <div class="flex justify-between items-center text-xs font-orbitron text-metal-silver border-b border-gray-800 pb-2 mb-3">
+              <span>PROJECT_03</span>
+              <span class="text-metal-gold">RENTAL PLATFORM</span>
+            </div>
+            <h3 class="font-orbitron font-bold text-xl text-white group-hover:text-metal-gold transition-colors">Pawiro Janu Studio</h3>
+            <p class="text-sm text-gray-400 mt-2">
+              Full camera equipment rental platform with interactive booking flow and admin dashboard.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <div class="flex flex-wrap gap-1 text-xs font-orbitron text-metal-gold">
+              <span class="bg-metal-black px-2 py-0.5 rounded border border-gray-800">Laravel</span>
+              <span class="bg-metal-black px-2 py-0.5 rounded border border-gray-800">Tailwind</span>
+              <span class="bg-metal-black px-2 py-0.5 rounded border border-gray-800">MySQL</span>
+            </div>
+            <button onclick="playSFX(800)" class="w-full py-2 bg-metal-dark border border-metal-gold text-metal-gold hover:bg-metal-gold hover:text-black font-orbitron text-xs rounded transition-colors">
+              VIEW DETAILS
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PHOTO GALLERY ==================== -->
+    <section id="gallery" class="space-y-6 section-reveal">
+      <div class="flex items-center gap-3">
+        <h2 class="font-orbitron font-extrabold text-3xl text-white flex items-center gap-3">
+          <i data-lucide="camera" class="text-metal-cyan w-8 h-8"></i>
+          PHOTO_GALLERY
+        </h2>
+        <div class="h-0.5 flex-1 bg-gradient-to-r from-metal-cyan to-transparent"></div>
+      </div>
+
+      <p class="text-metal-silver text-base font-orbitron">// KLIK FOTO UNTUK MEMPERBESAR — HOVER UNTUK PREVIEW</p>
+
+      <!-- Gallery Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div class="gallery-item group relative aspect-square overflow-hidden y2k-box cursor-pointer" onclick="openLightbox(this)">
+          <img src="gallery/WhatsApp Image 2026-10-04 at 21.03.06 - Copy.jpeg" alt="Studio Setup" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-110" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+            <span class="font-orbitron text-xs text-metal-cyan">METALLICA_LIVE.JPG</span>
+          </div>
+          <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="w-6 h-6 bg-metal-black/80 border border-metal-cyan rounded flex items-center justify-center">
+              <i data-lucide="maximize-2" class="w-3 h-3 text-metal-cyan"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-item group relative aspect-square overflow-hidden y2k-box cursor-pointer" onclick="openLightbox(this)">
+          <img src="gallery/critical acclaim.jpeg" alt="Coding Session" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-110" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+            <span class="font-orbitron text-xs text-metal-toxic">CRITICAL_ACCLAIM.JPG</span>
+          </div>
+          <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="w-6 h-6 bg-metal-black/80 border border-metal-cyan rounded flex items-center justify-center">
+              <i data-lucide="maximize-2" class="w-3 h-3 text-metal-cyan"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-item group relative aspect-square overflow-hidden y2k-box cursor-pointer" onclick="openLightbox(this)">
+          <img src="gallery/camera.jpeg" alt="Guitar & Music" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-110" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+            <span class="font-orbitron text-xs text-metal-crimson">CAMERA_SESSION.JPG</span>
+          </div>
+          <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="w-6 h-6 bg-metal-black/80 border border-metal-cyan rounded flex items-center justify-center">
+              <i data-lucide="maximize-2" class="w-3 h-3 text-metal-cyan"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-item group relative aspect-square overflow-hidden y2k-box cursor-pointer" onclick="openLightbox(this)">
+          <img src="gallery/linkin park live in texas.jpeg" alt="Events & Meetups" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-110" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+            <span class="font-orbitron text-xs text-metal-gold">LINKIN_PARK_LIVE_IN_TEXAS.JPG</span>
+          </div>
+          <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="w-6 h-6 bg-metal-black/80 border border-metal-cyan rounded flex items-center justify-center">
+              <i data-lucide="maximize-2" class="w-3 h-3 text-metal-cyan"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-item group relative aspect-square overflow-hidden y2k-box cursor-pointer md:col-span-2" onclick="openLightbox(this)">
+          <img src="gallery/soad.jpg" alt="Workspace" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-110" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+            <span class="font-orbitron text-xs text-metal-cyan">SOAD.JPG</span>
+          </div>
+          <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="w-6 h-6 bg-metal-black/80 border border-metal-cyan rounded flex items-center justify-center">
+              <i data-lucide="maximize-2" class="w-3 h-3 text-metal-cyan"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-item group relative aspect-square overflow-hidden y2k-box cursor-pointer" onclick="openLightbox(this)">
+          <img src="gallery/Lil bro.jpeg" alt="Linux Setup" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-110" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+            <span class="font-orbitron text-xs text-metal-toxic">Lil_Bro.JPG</span>
+          </div>
+          <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="w-6 h-6 bg-metal-black/80 border border-metal-cyan rounded flex items-center justify-center">
+              <i data-lucide="maximize-2" class="w-3 h-3 text-metal-cyan"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-item group relative aspect-square overflow-hidden y2k-box cursor-pointer" onclick="openLightbox(this)">
+          <img src="gallery/Linkin_Park,_The_Hunting_Party,_album_art_final.jpg" alt="School Life" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-110" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+            <span class="font-orbitron text-xs text-metal-gold">LINKIN_PARK_HUNTING_PARTY.JPG</span>
+          </div>
+          <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="w-6 h-6 bg-metal-black/80 border border-metal-cyan rounded flex items-center justify-center">
+              <i data-lucide="maximize-2" class="w-3 h-3 text-metal-cyan"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery Stats Bar -->
+      <div class="flex items-center justify-between text-xs font-orbitron text-metal-silver bg-metal-dark border border-gray-800 px-4 py-2 rounded">
+        <span>TOTAL FILES: <span class="text-metal-cyan">8</span></span>
+        <span>FORMAT: JPEG / PNG</span>
+        <span>STATUS: <span class="text-metal-toxic">LOADED</span></span>
+      </div>
+    </section>
+
+    <!-- ==================== FAVORITE FILMS ==================== -->
+    <section id="films" class="space-y-6 section-reveal">
+      <div class="flex items-center gap-3">
+        <h2 class="font-orbitron font-extrabold text-3xl text-white flex items-center gap-3">
+          <i data-lucide="clapperboard" class="text-metal-crimson w-8 h-8"></i>
+          FAVORITE_FILMS
+        </h2>
+        <div class="h-0.5 flex-1 bg-gradient-to-r from-metal-crimson via-metal-gold to-transparent"></div>
+      </div>
+
+      <p class="text-metal-silver text-base font-orbitron">// KOLEKSI FILM YANG GUE SUKA — GENRE: ACTION, SCI-FI, THRILLER, MUSIC</p>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- Film 1 -->
+        <div class="film-card y2k-box group overflow-hidden cursor-pointer hover:border-metal-crimson/70 transition-all duration-300" onclick="playSFX(700)">
+          <div class="relative aspect-[2/3] overflow-hidden">
+            <img src="gallery/godzilla minus one.jpg" alt="Godzilla Minus One" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t from-metal-black via-metal-black/30 to-transparent"></div>
+            <div class="absolute top-3 left-3">
+              <span class="bg-metal-toxic text-black font-orbitron text-[10px] font-bold px-2 py-0.5 rounded">★ 9.0</span>
+            </div>
+            <div class="absolute bottom-3 left-3 right-3">
+              <h3 class="font-orbitron font-bold text-lg text-white leading-tight">GODZILLA MINUS ONE</h3>
+              <p class="text-xs text-metal-cyan font-orbitron mt-1">1999 · SCI-FI / ACTION</p>
+            </div>
+          </div>
+          <div class="p-3 space-y-2">
+            <p class="text-sm text-gray-400 leading-relaxed line-clamp-2">Godzilla Minus One adalah sebuah film epik kaiju Jepang 2023 kaiju film directed, written, and with visual effects by Takashi Yamazaki.</p>
+            <div class="flex items-center gap-2 text-xs font-orbitron">
+              <span class="text-metal-toxic">DIRECTOR:</span>
+              <span class="text-metal-silver">TAKASHI YAMAZAKI</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Film 2 -->
+        <div class="film-card y2k-box group overflow-hidden cursor-pointer hover:border-metal-gold/70 transition-all duration-300" onclick="playSFX(700)">
+          <div class="relative aspect-[2/3] overflow-hidden">
+            <img src="gallery/interstellar.jpg" alt="Interstellar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t from-metal-black via-metal-black/30 to-transparent"></div>
+            <div class="absolute top-3 left-3">
+              <span class="bg-metal-gold text-black font-orbitron text-[10px] font-bold px-2 py-0.5 rounded">★ 8.7</span>
+            </div>
+            <div class="absolute bottom-3 left-3 right-3">
+              <h3 class="font-orbitron font-bold text-lg text-white leading-tight">INTERSTELLAR</h3>
+              <p class="text-xs text-metal-gold font-orbitron mt-1">2014 · SCI-FI / DRAMA</p>
+            </div>
+          </div>
+          <div class="p-3 space-y-2">
+            <p class="text-sm text-gray-400 leading-relaxed line-clamp-2">Perjalanan melewati black hole demi menyelamatkan umat manusia. Soundtrack Hans Zimmer bikin merinding.</p>
+            <div class="flex items-center gap-2 text-xs font-orbitron">
+              <span class="text-metal-toxic">DIRECTOR:</span>
+              <span class="text-metal-silver">CHRISTOPHER NOLAN</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Film 3 -->
+        <div class="film-card y2k-box group overflow-hidden cursor-pointer hover:border-metal-cyan/70 transition-all duration-300" onclick="playSFX(700)">
+          <div class="relative aspect-[2/3] overflow-hidden">
+            <img src="gallery/8 mile.jpg" alt="8 Mile" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t from-metal-black via-metal-black/30 to-transparent"></div>
+            <div class="absolute top-3 left-3">
+              <span class="bg-metal-crimson text-white font-orbitron text-[10px] font-bold px-2 py-0.5 rounded">★ 8.8</span>
+            </div>
+            <div class="absolute bottom-3 left-3 right-3">
+              <h3 class="font-orbitron font-bold text-lg text-white leading-tight">8 MILE</h3>
+              <p class="text-xs text-metal-crimson font-orbitron mt-1">2002 · DRAMA / MUSIC</p>
+            </div>
+          </div>
+          <div class="p-3 space-y-2">
+            <p class="text-sm text-gray-400 leading-relaxed line-clamp-2">8 Mile adalah film drama biografi hip hop tahun 2002 yang diproduksi dan disutradarai oleh Curtis Hanson dari naskah yang ditulis oleh Scott Silver.</p>
+            <div class="flex items-center gap-2 text-xs font-orbitron">
+              <span class="text-metal-toxic">DIRECTOR:</span>
+              <span class="text-metal-silver">CURTIS HANSON</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Film 4 -->
+        <div class="film-card y2k-box group overflow-hidden cursor-pointer hover:border-metal-toxic/70 transition-all duration-300" onclick="playSFX(700)">
+          <div class="relative aspect-[2/3] overflow-hidden">
+            <img src="gallery/attack on titan.jpg" alt="Attack on Titan" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t from-metal-black via-metal-black/30 to-transparent"></div>
+            <div class="absolute top-3 left-3">
+              <span class="bg-metal-cyan text-black font-orbitron text-[10px] font-bold px-2 py-0.5 rounded">★ 8.5</span>
+            </div>
+            <div class="absolute bottom-3 left-3 right-3">
+              <h3 class="font-orbitron font-bold text-lg text-white leading-tight">ATTACK ON TITAN</h3>
+              <p class="text-xs text-metal-cyan font-orbitron mt-1">2023 · ANIMATION / ACTION</p>
+            </div>
+          </div>
+          <div class="p-3 space-y-2">
+            <p class="text-sm text-gray-400 leading-relaxed line-clamp-2">Attack on Titan adalah sebuah film animasi Jepang 2023 yang disutradarai oleh Yuichiro Hayashi.</p>
+            <div class="flex items-center gap-2 text-xs font-orbitron">
+              <span class="text-metal-toxic">DIRECTOR:</span>
+              <span class="text-metal-silver">YUICHIRO HAYASHI</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Films Extra Row -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- Film 5 -->
+        <div class="film-card y2k-box group overflow-hidden cursor-pointer hover:border-metal-crimson/70 transition-all duration-300" onclick="playSFX(700)">
+          <div class="relative aspect-[2/3] overflow-hidden">
+            <img src="gallery/prison break.jpg" alt="Prison Break" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t from-metal-black via-metal-black/30 to-transparent"></div>
+            <div class="absolute top-3 left-3">
+              <span class="bg-metal-gold text-black font-orbitron text-[10px] font-bold px-2 py-0.5 rounded">★ 9.0</span>
+            </div>
+            <div class="absolute bottom-3 left-3 right-3">
+              <h3 class="font-orbitron font-bold text-lg text-white leading-tight">PRISON BREAK</h3>
+              <p class="text-xs text-metal-gold font-orbitron mt-1">2005 · ACTION / DRAMA</p>
+            </div>
+          </div>
+          <div class="p-3 space-y-2">
+            <p class="text-sm text-gray-400 leading-relaxed line-clamp-2">Prison Break adalah serial drama Amerika Serikat yang ditayangkan pertama kali di Fox Broadcasting Company pada tanggal 29 Agustus 2005.</p>
+            <div class="flex items-center gap-2 text-xs font-orbitron">
+              <span class="text-metal-toxic">DIRECTOR:</span>
+              <span class="text-metal-silver">Paul T. Scheuring</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Film 6 -->
+        <div class="film-card y2k-box group overflow-hidden cursor-pointer hover:border-metal-toxic/70 transition-all duration-300" onclick="playSFX(700)">
+          <div class="relative aspect-[2/3] overflow-hidden">
+            <img src="gallery/the boys.jpg" alt="the boys" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t from-metal-black via-metal-black/30 to-transparent"></div>
+            <div class="absolute top-3 left-3">
+              <span class="bg-metal-cyan text-black font-orbitron text-[10px] font-bold px-2 py-0.5 rounded">★ 8.0</span>
+            </div>
+            <div class="absolute bottom-3 left-3 right-3">
+              <h3 class="font-orbitron font-bold text-lg text-white leading-tight">THE BOYS</h3>
+              <p class="text-xs text-metal-cyan font-orbitron mt-1">2019 · ACTION / DRAMA</p>
+            </div>
+          </div>
+          <div class="p-3 space-y-2">
+            <p class="text-sm text-gray-400 leading-relaxed line-clamp-2">The Boys adalah sebuah seri televisi web pahlawan super Amerika Serikat yang berdasarkan pada buku komik bernama sama karya Garth Ennis dan Darick Robertson</p>
+            <div class="flex items-center gap-2 text-xs font-orbitron">
+              <span class="text-metal-toxic">DIRECTOR:</span>
+              <span class="text-metal-silver">Eric Kripke</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Film 7 -->
+        <div class="film-card y2k-box group overflow-hidden cursor-pointer hover:border-metal-gold/70 transition-all duration-300" onclick="playSFX(700)">
+          <div class="relative aspect-[2/3] overflow-hidden">
+            <img src="gallery/breaking bad.jpg" alt="Breaking Bad" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t from-metal-black via-metal-black/30 to-transparent"></div>
+            <div class="absolute top-3 left-3">
+              <span class="bg-metal-crimson text-white font-orbitron text-[10px] font-bold px-2 py-0.5 rounded">★ 9.5</span>
+            </div>
+            <div class="absolute bottom-3 left-3 right-3">
+              <h3 class="font-orbitron font-bold text-lg text-white leading-tight">BREAKING BAD</h3>
+              <p class="text-xs text-metal-crimson font-orbitron mt-1">2008 · CRIME / DRAMA</p>
+            </div>
+          </div>
+          <div class="p-3 space-y-2">
+            <p class="text-sm text-gray-400 leading-relaxed line-clamp-2">Breaking Bad adalah serial TV Amerika bertema drama kejahatan, ditulis dan diproduksi oleh Vince Gilligan. Acara ini disiarkan AMC selama 5 musim, dari 20 Januari 2008 sampai 29 September 2013.</p>
+            <div class="flex items-center gap-2 text-xs font-orbitron">
+              <span class="text-metal-toxic">DIRECTOR:</span>
+              <span class="text-metal-silver">Vince Gilligan</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Film 8 -->
+        <div class="film-card y2k-box group overflow-hidden cursor-pointer hover:border-metal-crimson/70 transition-all duration-300" onclick="playSFX(700)">
+          <div class="relative aspect-[2/3] overflow-hidden">
+            <img src="gallery/better call saul.jpg" alt="Better Call Saul" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t from-metal-black via-metal-black/30 to-transparent"></div>
+            <div class="absolute top-3 left-3">
+              <span class="bg-metal-gold text-black font-orbitron text-[10px] font-bold px-2 py-0.5 rounded">★ 8.1</span>
+            </div>
+            <div class="absolute bottom-3 left-3 right-3">
+              <h3 class="font-orbitron font-bold text-lg text-white leading-tight">BETTER CALL SAUL</h3>
+              <p class="text-xs text-metal-gold font-orbitron mt-1">2015 · CRIME / DRAMA</p>
+            </div>
+          </div>
+          <div class="p-3 space-y-2">
+            <p class="text-sm text-gray-400 leading-relaxed line-clamp-2">Better Call Saul adalah serial televisi Amerika yang merupakan prequel dari Breaking Bad, ditulis dan diproduksi oleh Vince Gilligan.</p>
+            <div class="flex items-center gap-2 text-xs font-orbitron">
+              <span class="text-metal-toxic">DIRECTOR:</span>
+              <span class="text-metal-silver">Vince Gilligan</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Film Stats Bar -->
+      <div class="flex items-center justify-between text-xs font-orbitron text-metal-silver bg-metal-dark border border-gray-800 px-4 py-2 rounded">
+        <span>COLLECTION: <span class="text-metal-crimson">8 FILMS</span></span>
+        <span>GENRE: ACTION / SCI-FI / THRILLER / DRAMA</span>
+        <span>RATING: <span class="text-metal-gold">★ 8.0+</span></span>
+      </div>
+    </section>
+
+    <!-- ==================== TERMINAL ==================== -->
+    <section id="terminal" class="y2k-box section-reveal">
+      <div class="y2k-header">
+        <span>INTERACTIVE_Y2K_TERMINAL.EXE</span>
+        <span>STATUS: CONNECTED</span>
+      </div>
+      <div class="p-4 bg-black font-vt323 text-lg text-metal-toxic space-y-3">
+        <p>Try <span class="text-white font-bold">help</span>, <span class="text-white font-bold">cd about</span>, or <span class="text-white font-bold">play 1</span>.</p>
+        
+        <div id="terminalOutput" aria-live="polite" class="space-y-1 max-h-48 overflow-y-auto text-sm sm:text-base pr-2"></div>
+
+        <div class="flex items-center gap-2 border-t border-gray-800 pt-2">
+          <label id="terminalPrompt" for="terminalInput" class="text-metal-crimson font-bold whitespace-nowrap">guest@Yazid-os:~$</label>
+          <input type="text" id="terminalInput" aria-label="Terminal command" autocomplete="off" placeholder="cd about | play 1 | help" class="bg-transparent text-white border-none outline-none flex-1 min-w-0 font-vt323 text-lg focus:ring-0">
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CONTACT ==================== -->
+    <section id="contact" class="space-y-6 section-reveal">
+      <div class="flex items-center gap-3">
+        <h2 class="font-orbitron font-extrabold text-3xl text-white">CONTACT</h2>
+        <div class="h-0.5 flex-1 bg-gradient-to-r from-metal-crimson to-transparent"></div>
+      </div>
+      <div class="grid sm:grid-cols-3 gap-4">
+        <a href="mailto:yazidilmany37@gmail.com" class="y2k-box p-5 text-metal-cyan hover:border-metal-cyan transition-colors">
+          <span class="block font-orbitron text-xs text-metal-silver mb-2">EMAIL</span>
+          yazidilmany37@gmail.com
+        </a>
+        <a href="https://github.com/Yazzid37-netizen" target="_blank" rel="noopener noreferrer" class="y2k-box p-5 text-metal-toxic hover:border-metal-toxic transition-colors">
+          <span class="block font-orbitron text-xs text-metal-silver mb-2">GITHUB</span>
+          Yazzid37-netizen
+        </a>
+        <div class="y2k-box p-5 text-metal-gold">
+          <span class="block font-orbitron text-xs text-metal-silver mb-2">LOCATION</span>
+          Bantul, Yogyakarta, ID
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Lightbox Modal -->
+  <div id="lightbox" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm hidden items-center justify-center p-4 cursor-pointer" onclick="closeLightbox()">
+    <button class="absolute top-6 right-6 text-metal-silver hover:text-white font-orbitron text-sm flex items-center gap-2 z-10 bg-metal-dark/80 px-3 py-2 rounded border border-gray-700 hover:border-metal-crimson transition-colors">
+      <i data-lucide="x" class="w-4 h-4"></i> CLOSE [ESC]
+    </button>
+    <img id="lightboxImg" src="" alt="" class="max-w-full max-h-[85vh] object-contain rounded shadow-[0_0_60px_rgba(0,240,255,0.15)] border-2 border-gray-800">
+    <div id="lightboxCaption" class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-metal-black/90 border border-metal-cyan/30 px-4 py-2 rounded font-orbitron text-xs text-metal-cyan"></div>
+  </div>
+
+  <!-- Winamp Player -->
+  <div id="winampPlayer" class="fixed bottom-4 right-4 z-50 w-80 bg-metal-black border-2 border-metal-silver p-3 rounded shadow-[0_0_20px_rgba(0,0,0,0.8)] font-vt323 space-y-2">
+    <div class="flex justify-between items-center bg-metal-dark px-2 py-1 border border-gray-800">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-metal-toxic animate-ping"></span>
+        <span class="font-orbitron text-xs text-metal-cyan">WINAMP v2.91 // YAZID AUDIO</span>
+      </div>
+      <button onclick="toggleWinamp()" class="text-metal-silver hover:text-white font-bold text-xs">X</button>
+    </div>
+
+    <div class="bg-black p-2 border border-gray-800 text-metal-toxic flex justify-between items-center text-sm">
+      <span id="trackName" class="truncate">01. Linkin Park - A Place For My Head.mp3</span>
+      <span id="trackTime" class="font-orbitron text-xs text-metal-gold">00:00</span>
+    </div>
+
+    <div class="flex items-end justify-between h-8 bg-black/60 px-2 py-1 gap-1 border border-gray-900">
+      <div class="vis-bar h-2 w-full bg-metal-toxic"></div>
+      <div class="vis-bar h-5 w-full bg-metal-toxic"></div>
+      <div class="vis-bar h-3 w-full bg-metal-toxic"></div>
+      <div class="vis-bar h-7 w-full bg-metal-toxic"></div>
+      <div class="vis-bar h-4 w-full bg-metal-toxic"></div>
+      <div class="vis-bar h-6 w-full bg-metal-toxic"></div>
+      <div class="vis-bar h-2 w-full bg-metal-toxic"></div>
+    </div>
+
+    <div class="flex items-center justify-between pt-1">
+      <div class="flex items-center gap-1">
+        <button onclick="prevTrack()" class="px-2 py-1 bg-metal-dark border border-gray-700 text-white hover:border-metal-cyan text-xs font-orbitron">PREV</button>
+        <button id="playBtn" onclick="togglePlayMusic()" class="px-3 py-1 bg-metal-crimson text-white hover:bg-red-600 text-xs font-orbitron font-bold">PLAY</button>
+        <button onclick="nextTrack()" class="px-2 py-1 bg-metal-dark border border-gray-700 text-white hover:border-metal-cyan text-xs font-orbitron">NEXT</button>
+      </div>
+
+      <div class="flex items-center gap-1 text-xs text-metal-silver">
+        <span>VOL:</span>
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.7" onchange="setVolume(this.value)" class="w-16 accent-metal-crimson">
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800 bg-metal-dark/50 py-10 mt-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid sm:grid-cols-3 gap-8 text-center sm:text-left">
+        <div>
+          <div class="flex items-center gap-2 justify-center sm:justify-start mb-3">
+            <div class="w-6 h-6 rounded bg-metal-crimson flex items-center justify-center font-orbitron font-black text-black text-sm">Y</div>
+            <span class="font-orbitron font-bold text-white">YAZID<span class="text-metal-crimson text-[8px] align-super">.SYS</span></span>
+          </div>
+          <p class="text-sm text-metal-silver">Built with Y2K Cyber Brutalism & Nu-Metal Energy.</p>
+        </div>
+        <div class="font-orbitron text-xs space-y-2">
+          <p class="text-metal-crimson font-bold mb-2">QUICK LINKS</p>
+          <a href="#about" onclick="smoothScrollToSection(event, 'about')" class="block text-metal-silver hover:text-metal-toxic transition-colors">/ABOUT</a>
+          <a href="#gallery" onclick="smoothScrollToSection(event, 'gallery')" class="block text-metal-silver hover:text-metal-toxic transition-colors">/GALLERY</a>
+          <a href="#films" onclick="smoothScrollToSection(event, 'films')" class="block text-metal-silver hover:text-metal-toxic transition-colors">/FILMS</a>
+        </div>
+        <div class="font-orbitron text-xs space-y-2">
+          <p class="text-metal-toxic font-bold mb-2">STATUS</p>
+          <p class="text-metal-silver">SMKN 1 BANTUL</p>
+          <p class="text-metal-silver">SOFTWARE ENGINEERING</p>
+          <p class="text-metal-cyan">© 2026 YAZID</p>
+        </div>
+      </div>
+      <div class="mt-8 pt-4 border-t border-gray-800 text-center  ">
+        <p class="font-vt323 text-metal-silver text-sm">[ SYSTEM UPTIME: <span class="text-metal-toxic" id="uptimeCounter">00:00:00</span> ] — ALL SYSTEMS OPERATIONAL</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+</html>
